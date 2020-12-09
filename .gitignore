@@ -24,3 +24,4 @@ yarn-error.log*
 
 # config
 /config/index.js
+/dist
