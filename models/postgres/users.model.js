@@ -22,6 +22,9 @@ const Users = (sequelize, Sequelize) => {
         updated_at: {
             type: 'TIMESTAMP',
             defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        },
+        uuid: {
+            type: Sequelize.STRING
         }
     });
     Users.associate = function(models) {

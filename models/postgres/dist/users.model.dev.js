@@ -23,6 +23,9 @@ var Users = function Users(sequelize, Sequelize) {
     updated_at: {
       type: 'TIMESTAMP',
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    uuid: {
+      type: Sequelize.STRING
     }
   });
 

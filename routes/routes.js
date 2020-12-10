@@ -14,7 +14,7 @@ router.post('/signup', userController.signup);
 router.post('/login', authController.signin);
 router.get('/sales', authJwt.allowIfLoggedin, accessControl.grantAccess('readOwn', 'profile'), salesController.findAll);
 
-router.get('/createUid', usersController.generateUid);
+router.get('/generateUsersUUID', usersController.generateUsersUUID);
 
 router.use('/users/', userRouter);
 router.use('/stores', storeRouter);

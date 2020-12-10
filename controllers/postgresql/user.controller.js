@@ -1,18 +1,17 @@
 const userServices = require('../../services/users.services')
 
 
-exports.generateUid = async (req, res) => {
+exports.generateUsersUUID = async (req, res) => {
 
     try {
-        usersWithoutUid = await userServices.generateUid();
-        console.log(usersWithoutUid);
-        res.send(usersWithoutUid)
+        result = await userServices.createAllUserUUID();
+        res.send(result);
     } catch (err) {
+        console.log(err);
         res.status(500).send({
             message:
             err.message || "Some error occurred while retrieving tutorials."
         });
     }
-    
     
 }
