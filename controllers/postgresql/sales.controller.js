@@ -1,26 +1,21 @@
 const db = require("../../models/postgres/index");
+const UserService = require('../../services/users.services')
 const { Sequelize } = require('sequelize');
 const Sales = db.Sales;
 const Roles = db.Roles;
 const RoleToUser = db.RoleToUser;
 const Op = Sequelize.Op;
 
-exports.findAll = (req, res) => {
-    const name = req.query.name;
-    var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-  
-    Sales.findAll({ 
-      where: condition, 
-      order: ['id'] ,
-      include: 'Roles'
-    })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+exports.findAll = async (req, res) => {
+  try {
+      const name = req.query.name;
+      result = await UserService.getUsersByName(name);
+      res.send(result);
+  } catch (err) {
+      console.log(err);
       res.status(500).send({
-        message:
+          message:
           err.message || "Some error occurred while retrieving tutorials."
       });
-    });
+  }
 };

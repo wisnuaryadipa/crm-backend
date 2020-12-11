@@ -2,17 +2,20 @@
 
 var _this = void 0;
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var _require = require('uuid'),
     uuid1 = _require.v1;
 
-var db = require("../models/postgres/index");
+var _require2 = require('../models/postgres/index'),
+    Roles = _require2.Roles,
+    Users = _require2.Users;
 
-var _require2 = require('sequelize'),
-    Sequelize = _require2.Sequelize;
+var _require3 = require('sequelize'),
+    Sequelize = _require3.Sequelize;
 
 var moment = require('moment');
 
-var Users = db.Users;
 var Op = Sequelize.Op;
 var defaultField = ['id', 'name', 'email', 'uuid'];
 
@@ -223,6 +226,94 @@ exports.getUsers = function _callee7() {
         case 4:
         case "end":
           return _context7.stop();
+      }
+    }
+  });
+};
+
+exports.getUserByEmailForLogin = function _callee8(email) {
+  var result;
+  return regeneratorRuntime.async(function _callee8$(_context8) {
+    while (1) {
+      switch (_context8.prev = _context8.next) {
+        case 0:
+          _context8.next = 2;
+          return regeneratorRuntime.awrap(Users.findOne({
+            where: {
+              email: email
+            }
+          }));
+
+        case 2:
+          result = _context8.sent;
+          return _context8.abrupt("return", result);
+
+        case 4:
+        case "end":
+          return _context8.stop();
+      }
+    }
+  });
+};
+
+exports.getUserByEmail = function _callee9(email) {
+  var result;
+  return regeneratorRuntime.async(function _callee9$(_context9) {
+    while (1) {
+      switch (_context9.prev = _context9.next) {
+        case 0:
+          _context9.next = 2;
+          return regeneratorRuntime.awrap(Users.findOne({
+            attributes: defaultField,
+            where: {
+              email: email
+            },
+            include: {
+              model: Roles,
+              as: 'Roles',
+              attributes: ['name', 'display_name', 'id']
+            }
+          }));
+
+        case 2:
+          result = _context9.sent;
+          return _context9.abrupt("return", result);
+
+        case 4:
+        case "end":
+          return _context9.stop();
+      }
+    }
+  });
+};
+
+exports.getUsersByName = function _callee10(name) {
+  var condition, result;
+  return regeneratorRuntime.async(function _callee10$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
+          /**
+           * Select users by LIKE name
+           */
+          condition = name ? {
+            name: _defineProperty({}, Op.iLike, "%".concat(name, "%"))
+          } : null;
+          _context10.next = 3;
+          return regeneratorRuntime.awrap(Sales.findAll({
+            attributes: defaultField,
+            where: condition,
+            order: ['id'],
+            include: 'Roles'
+          }));
+
+        case 3:
+          result = _context10.sent;
+          return _context10.abrupt("return", result);
+
+        case 5:
+        case "end":
+          return _context10.stop();
       }
     }
   });

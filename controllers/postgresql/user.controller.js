@@ -2,7 +2,6 @@ const userServices = require('../../services/users.services')
 
 
 exports.generateUsersUUID = async (req, res) => {
-
     try {
         result = await userServices.createAllUserUUID();
         res.send(result);
@@ -13,5 +12,4 @@ exports.generateUsersUUID = async (req, res) => {
             err.message || "Some error occurred while retrieving tutorials."
         });
     }
-    
 }

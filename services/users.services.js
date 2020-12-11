@@ -1,9 +1,8 @@
 
 const { v1 : uuid1 } = require('uuid');
-const db = require("../models/postgres/index");
+const { Roles, Users } = require('../models/postgres/index');
 const { Sequelize } = require('sequelize');
 const moment = require('moment');
-const Users = db.Users;
 const Op = Sequelize.Op;
 
 
@@ -114,4 +113,53 @@ exports.getUsers = async () => {
          attributes: defaultField,
      });
      return result;
+}
+
+exports.getUserByEmailForLogin = async (email) => {
+    /**
+     * Select user by email (only for login auth)
+     */
+    var result = await Users.findOne({
+        where: {
+            email: email
+        }
+    })
+    return result;
+}
+
+exports.getUserByEmail = async (email) => {
+    /**
+     * Select user by email
+     */
+    var result = await Users.findOne({
+        attributes: defaultField,
+        where: {
+            email: email
+        },
+        include: {
+            model: Roles,
+            as: 'Roles',
+            attributes: [
+                'name',
+                'display_name',
+                'id'
+            ]
+        }
+    })
+    return result;
+}
+
+exports.getUsersByName = async (name) => {
+    /**
+     * Select users by LIKE name
+     */
+    var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
+    var result = await Sales.findAll({ 
+        attributes: defaultField,
+        where: condition, 
+        order: ['id'] ,
+        include: 'Roles'
+    })
+    return result;
+
 }

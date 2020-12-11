@@ -15,7 +15,10 @@ var db = require("../../models/postgres/index");
 var _require3 = require('../../models/postgres/index'),
     Roles = _require3.Roles;
 
+var UserService = require('../../services/users.services');
+
 var Sales = db.Sales;
+var Users = db.Users;
 var Op = Sequelize.Op;
 
 function validatePassword(plainPassword, hashedPassword) {
@@ -39,7 +42,7 @@ function validatePassword(plainPassword, hashedPassword) {
 }
 
 exports.signin = function _callee(req, res, next) {
-  var _req$body, email, password, user, validPassword, accessToken;
+  var _req$body, email, password, userSelected, validPassword, accessToken;
 
   return regeneratorRuntime.async(function _callee$(_context2) {
     while (1) {
@@ -48,21 +51,12 @@ exports.signin = function _callee(req, res, next) {
           _context2.prev = 0;
           _req$body = req.body, email = _req$body.email, password = _req$body.password;
           _context2.next = 4;
-          return regeneratorRuntime.awrap(Sales.findOne({
-            where: {
-              email: email
-            },
-            include: {
-              model: Roles,
-              as: 'Roles',
-              attributes: ['name', 'display_name', 'id']
-            }
-          }));
+          return regeneratorRuntime.awrap(UserService.getUserByEmailForLogin(email));
 
         case 4:
-          user = _context2.sent;
+          userSelected = _context2.sent;
 
-          if (user) {
+          if (userSelected) {
             _context2.next = 7;
             break;
           }
@@ -71,7 +65,7 @@ exports.signin = function _callee(req, res, next) {
 
         case 7:
           _context2.next = 9;
-          return regeneratorRuntime.awrap(validatePassword(password, user.password));
+          return regeneratorRuntime.awrap(validatePassword(password, userSelected.password));
 
         case 9:
           validPassword = _context2.sent;
@@ -85,14 +79,14 @@ exports.signin = function _callee(req, res, next) {
 
         case 12:
           accessToken = jwt.sign({
-            userId: user.id
+            userId: userSelected.id
           }, process.env.JWT_SECRET, {
             expiresIn: "1d"
           });
           res.status(200).json({
             data: {
-              email: user.email,
-              role: user.Roles
+              email: userSelected.email,
+              role: userSelected.Roles
             },
             accessToken: accessToken
           });
