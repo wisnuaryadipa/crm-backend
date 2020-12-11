@@ -14,6 +14,7 @@ var moment = require('moment');
 
 var Users = db.Users;
 var Op = Sequelize.Op;
+var defaultField = ['id', 'name', 'email', 'uuid'];
 
 exports.createAllUserUUID = function _callee(req, res) {
   var condition, usersWithoutUid;
@@ -30,9 +31,7 @@ exports.createAllUserUUID = function _callee(req, res) {
           };
           _context.next = 3;
           return regeneratorRuntime.awrap(Users.findAll({
-            where: {
-              uuid: null
-            },
+            where: condition,
             order: ['id']
           }));
 
@@ -72,6 +71,7 @@ exports.updateByIdForNullUUID = function _callee2(userId) {
             uuid: uuid1(),
             updated_at: moment().tz('Asia/Jakarta').format("YYYY-MM-DD HH:mm:ss")
           }, {
+            attributes: defaultField,
             where: condition,
             returning: true,
             plain: true
@@ -103,9 +103,12 @@ exports.updateByUUID = function _callee3(UUID, data) {
           };
           _context3.next = 3;
           return regeneratorRuntime.awrap(Users.update({
-            uuid: uuid1(),
+            name: data.name,
+            email: data.email,
+            password: data.password,
             updated_at: moment().tz('Asia/Jakarta').format("YYYY-MM-DD HH:mm:ss")
           }, {
+            attributes: defaultField,
             where: condition,
             returning: true,
             plain: true
@@ -118,6 +121,108 @@ exports.updateByUUID = function _callee3(UUID, data) {
         case 5:
         case "end":
           return _context3.stop();
+      }
+    }
+  });
+};
+
+exports.createUser = function _callee4(data) {
+  var result;
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.next = 2;
+          return regeneratorRuntime.awrap(Users.create({
+            name: data.name,
+            email: data.email,
+            password: data.password,
+            updated_at: moment().tz('Asia/Jakarta').format("YYYY-MM-DD HH:mm:ss"),
+            created_at: moment().tz('Asia/Jakarta').format("YYYY-MM-DD HH:mm:ss"),
+            uuid: uuid1()
+          }));
+
+        case 2:
+          result = _context4.sent;
+          return _context4.abrupt("return", result);
+
+        case 4:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  });
+};
+
+exports.deleteUser = function _callee5(UUID) {
+  var result;
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.next = 2;
+          return regeneratorRuntime.awrap(Users.destroy({
+            where: {
+              uuid: UUID
+            }
+          }));
+
+        case 2:
+          result = _context5.sent;
+          return _context5.abrupt("return", result);
+
+        case 4:
+        case "end":
+          return _context5.stop();
+      }
+    }
+  });
+};
+
+exports.getUserByUUID = function _callee6(UUID) {
+  var result;
+  return regeneratorRuntime.async(function _callee6$(_context6) {
+    while (1) {
+      switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.next = 2;
+          return regeneratorRuntime.awrap(Users.findOne({
+            attributes: defaultField,
+            where: {
+              uid: UUID
+            }
+          }));
+
+        case 2:
+          result = _context6.sent;
+          return _context6.abrupt("return", result);
+
+        case 4:
+        case "end":
+          return _context6.stop();
+      }
+    }
+  });
+};
+
+exports.getUsers = function _callee7() {
+  var result;
+  return regeneratorRuntime.async(function _callee7$(_context7) {
+    while (1) {
+      switch (_context7.prev = _context7.next) {
+        case 0:
+          _context7.next = 2;
+          return regeneratorRuntime.awrap(Users.findAll({
+            attributes: defaultField
+          }));
+
+        case 2:
+          result = _context7.sent;
+          return _context7.abrupt("return", result);
+
+        case 4:
+        case "end":
+          return _context7.stop();
       }
     }
   });
